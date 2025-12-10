@@ -818,11 +818,6 @@ title_timer = pygame.time.get_ticks()
 title_alpha = 255
 
 
-#remove
-for e in game_items.values():
-    e["collected"] = True
-
-
 ###### MAIN LOOP 
 ########################
 #######################3
