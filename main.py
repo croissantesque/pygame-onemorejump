@@ -16,7 +16,7 @@ flash_active = False
 flash_timer = 0
 flash_peak = 0
 flash_color = (255,255,255)
-tile_size = 32 
+tile_size = 32
 zone = None
 particles = []
 lasers = []
@@ -38,7 +38,7 @@ bg_imgs = {
     "room": {"bottom": pygame.image.load("images/room.png").convert_alpha(), "top": pygame.image.load("images/roomtop.png").convert_alpha()},
     "factory": {"bottom": pygame.image.load("images/factory.png").convert_alpha(), "top": pygame.image.load("images/factorytop.png").convert_alpha()},
     "glacier": {"bottom": pygame.image.load("images/glacier.png").convert_alpha(), "top": pygame.image.load("images/glaciertop.png").convert_alpha()},
-    "nrevac": {"bottom": pygame.image.load("images/room.png").convert_alpha(), "top": pygame.image.load("images/roomtop.png").convert_alpha()}, 
+    "nrevac": {"bottom": pygame.image.load("images/room.png").convert_alpha(), "top": pygame.image.load("images/roomtop.png").convert_alpha()},
     "pipeworks": {"bottom": pygame.image.load("images/room.png").convert_alpha(), "top": pygame.image.load("images/roomtop.png").convert_alpha()},
     "cavern": {"bottom": pygame.image.load("images/room.png").convert_alpha(), "top": pygame.image.load("images/roomtop.png").convert_alpha()}
 
@@ -75,7 +75,7 @@ pickup_lore = {
     "Regret":       "Numbing, yet pointless. It wouldn't bring her back. Nothing would.",
     "Clarity":      "Cold, perfect logic. NR3VAC thought this would save you. It only showed the ashes.",
     "Hope":         "A single ember that refused to die. You hated it for surviving when everything else didn't.",
-    "Voice":        "Your real voice, before the fire warped it. You'll never get it back whole.", 
+    "Voice":        "Your real voice, before the fire warped it. You'll never get it back whole.",
     "Promise":      "The vow you made. Now just twisted metal. Like everything you touched."
 }
 psycho_log = {
@@ -157,13 +157,13 @@ message_log = []
 class Particle:
     def __init__(self,colour, x=None,y=None,vx=None,vy=None, life=None, life_decrement=0.1):
         self.colour = colour
-        self.x =x 
+        self.x =x
         self.y = y
         self.vx = vx
         self.vy = vy
         self.life= life
         self.life_decrement=life_decrement
-    
+
         if self.life == None:
             self.life = random.randint(180,255)
         if self.x == None:
@@ -220,7 +220,7 @@ class Player:
         self.autobounce_multiplier = 1.2
         self.boost_recovering = False
         self.recover_timer=0
-        self.dashes = 100
+        self.dashes = 0
         self.dashes_left = self.dashes
         self.dash_speed = 25
         self.dash_timer = 0
@@ -230,14 +230,14 @@ class Player:
         self.pr_rect = self.rect.copy()
         self.grounded_tiles = []
         # Cyan flash setup
-        self.color = [0, 60, 210] 
+        self.color = [0, 60, 210]
         self.base_blue = 210
         self.base_green = 60
         self.base_red = 0
         self.flash_speed = 0.2
         self.flash_timer = 0
 
-    
+
 
     def handle_input(self, keys, jump_triggered):
         if self.bounce_lock > 0:
@@ -247,7 +247,7 @@ class Player:
             self.boost_recovering = True
             self.recover_timer = 40
             return
-            
+
         elif self.bounce_lock <= 0 and self.boost_recovering == True:
             self.vel_x *= 0.94
             self.recover_timer -= 1
@@ -259,8 +259,8 @@ class Player:
             target_vel_x = -self.active_speed
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             target_vel_x = self.active_speed
-        
-        
+
+
         if jump_triggered and self.extra_jumps > 0 and not self.grounded:
             if self.jumps_left > 0:
                 self.vel_y = self.jump_power
@@ -280,7 +280,7 @@ class Player:
             acceleration = 0.2
             friction = 0.85
             self.active_speed = self.base_speed
-            
+
         if target_vel_x != 0:
 
             self.vel_x += (target_vel_x - self.vel_x) * acceleration
@@ -305,18 +305,18 @@ class Player:
                 self.dash_dir = direction
                 self.bounce_lock = self.dash_length
                 self.vel_x = self.dash_speed * direction
-                self.vel_y = 0  
+                self.vel_y = 0
                 self.color = [255,50,150]
     def update_dash(self):
         if self.dash_timer > 0:
             self.dash_timer -= 1
             self.vel_x = self.dash_speed * self.dash_dir
-            self.vel_y = 0 #just to ensure gravity doesnt kick in 
+            self.vel_y = 0 #just to ensure gravity doesnt kick in
             self.bounce_lock = self.dash_timer
             if self.dash_timer <= 0:
-                self.vel_x *= 0.6 
+                self.vel_x *= 0.6
                 self.dash_dir = 0
-        
+
 
     def move_x(self, platforms):
 
@@ -399,11 +399,11 @@ class Player:
                 if self.rect.colliderect(tile.rect):
                     self.rect.top = tile.rect.bottom
                     self.vel_y = 1 #useless lil bounce
-                    
 
-        
+
+
         for tile in platforms:
-  
+
             if (abs(self.rect.bottom - tile.rect.top) <= 2 and #little 2px grace
                 self.rect.right > tile.rect.left and
                 self.rect.left < tile.rect.right):
@@ -415,7 +415,7 @@ class Player:
                     tile.triggered = True
                     tile.flash = 15
                     self.camera.start_shake(20,9)
-                    
+
 
         #refills
         if self.grounded:
@@ -440,7 +440,7 @@ class Player:
             self.coyote_timer = self.COYOTE_TIME
         else:
             self.coyote_timer = max(0, self.coyote_timer - dt)
-            
+
     def jump(self, keys):
             if (keys[pygame.K_s] or keys[pygame.K_DOWN]):
                     if self.bounceable:
@@ -478,18 +478,18 @@ class Player:
     def draw(self, screen, camera_x, camera_y):
         if self.dashes_left > 0:
         # brighter with available dash - brighter/more saturated
-            fill_color = [min(255, self.color[0] + 50), 
-                        min(255, self.color[1] + 50), 
+            fill_color = [min(255, self.color[0] + 50),
+                        min(255, self.color[1] + 50),
                         min(255, self.color[2] + 50)]
         else:
             #dimmer else
             fill_color = [max(0, self.color[0]),
-                        max(0, self.color[1] ), 
+                        max(0, self.color[1] ),
                         max(0, self.color[2])]
-        pygame.draw.rect(screen, fill_color, 
+        pygame.draw.rect(screen, fill_color,
                         (self.rect.x - camera_x, self.rect.y - camera_y, self.rect.width, self.rect.height),
                         border_radius=3)
-       
+
 class Camera:
     def __init__(self):
         self.x = 0
@@ -521,15 +521,15 @@ class Camera:
             self.shake_intensity = 0
             self.init_shake_duration = 0
 
-            
-    
+
+
     def start_shake(self, duration, intensity):
-        self.shake_duration = self.init_shake_duration = duration 
+        self.shake_duration = self.init_shake_duration = duration
         self.shake_intensity = intensity
 
-    def get_offset(self): 
+    def get_offset(self):
         return (self.shake_offset_x,self.shake_offset_y)
-    
+
 def add_log(text):
     global message_log
     current_time = pygame.time.get_ticks()
@@ -542,18 +542,18 @@ def draw_log():
     for message in reversed(message_log):
         elapsed = now - message["time"]
 
-        fade_start = 10000  
+        fade_start = 10000
         fade_duration = 4000
         alpha = 255
         if elapsed > fade_start:
             alpha = max(0, 255 - int((elapsed - fade_start) / fade_duration * 255))
         if alpha <= 0:
-            continue  
+            continue
 
         text_surface = prompt_font.render(message["text"], True, (255,255,255))
         text_surface.set_alpha(alpha)
         screen.blit(text_surface, (WIDTH - text_surface.get_width() - 30, log_y))
-        
+
         log_y -= 25
 
 
@@ -565,7 +565,7 @@ def interact_tile(current_level, player):
         interact_zone = levels[current_level]["interact_zone"]
         if player.rect.colliderect(interact_zone):
             text_surface = prompt_font.render("Press E to interact", True, (255, 255, 255))
-            screen.blit(text_surface, 
+            screen.blit(text_surface,
                 (interact_zone.x - camera.x, interact_zone.y - 30 - camera.y))
 
             if pygame.key.get_pressed()[pygame.K_e]:
@@ -575,7 +575,7 @@ def interact_tile(current_level, player):
                         if bounce_unlock == False:
                             player.bounces += 1
                             add_log("You force Resilience, Echo and Regret together at the charred family table.")
-                            
+
                             camera.start_shake(100,0)
                             player.color = [255,255,255]
                             player.flash_timer = 80
@@ -585,9 +585,9 @@ def interact_tile(current_level, player):
                             add_log("Press S or down to bounce higher on purple tiles.")
                             add_log("Sometimes, you must fall harder to rise higher.")
                             bounce_unlock = True
-                        else: 
+                        else:
                             pass
-                    else: 
+                    else:
                         message = "You sink to the ground, drained. You're missing Factors. Come back later."
                         if message not in message_log:
                             add_log(message)
@@ -596,11 +596,11 @@ def interact_tile(current_level, player):
                         item["collected"]
                         for item in (
                             game_items["Voice"],
-                            game_items["Hope"], 
+                            game_items["Hope"],
                             game_items["Promise"]
                         )
                     )
-                    if unlocked: 
+                    if unlocked:
                         if dash_unlock == False:
                             add_log("The Factors meld together beautifully.")
 
@@ -614,7 +614,7 @@ def interact_tile(current_level, player):
                             dash_unlock = True
                         else:
                             pass
-                    else: 
+                    else:
                         message = "Come back later... if you can."
                         if message not in message_log:
                             add_log(message)
@@ -632,7 +632,7 @@ def draw_items():
         if levels[current_level]["collected"] == False:
             colour = game_items[room_item]["colour"]
             size = game_items[room_item]["size"]
-            pygame.draw.rect(screen, colour, 
+            pygame.draw.rect(screen, colour,
                             (room_item_pos.x - size // 2 - camera.x,
                             room_item_pos.y - size // 2 + float_y - camera.y,
                             size, size), border_radius=3)
@@ -640,7 +640,7 @@ def draw_items():
             item_rect = pygame.Rect((room_item_pos.x - colli_size// 2,
                             room_item_pos.y - colli_size//2,
                             colli_size, colli_size))
-            
+
             if player.rect.colliderect(item_rect):
                 text_surface = prompt_font.render("Press E to pick up", True, (255, 255, 255))
 
@@ -659,7 +659,7 @@ def draw_items():
 
 
 
-                    
+
 def show_start_screen(camera_x, camera_y):
     # Draw start screen
     start_surface = pygame.Surface((WIDTH, HEIGHT))
@@ -670,7 +670,7 @@ def show_start_screen(camera_x, camera_y):
 
     title_x = WIDTH // 2 - title_surface.get_width() // 2
     title_y = HEIGHT // 2 - title_surface.get_height() // 2 - 50
-    
+
     subtitle_x = WIDTH // 2 - subtitle_surface.get_width() // 2
     subtitle_y = HEIGHT // 2 + 50
 
@@ -694,7 +694,7 @@ def show_start_screen(camera_x, camera_y):
 
     for alpha in range(0, 255, 5):
         screen.blit(game_frame, (0, 0))
-        
+
         overlay = start_surface.copy()
         overlay.set_alpha(255 - alpha)
         screen.blit(overlay, (0, 0))
@@ -708,7 +708,7 @@ def start_flash(color=(255, 255, 255)):
     flash_color = color
     flash_timer = 0
     camera.start_shake(60, 16)
-    
+
 def draw_tiles(platforms, static, room_width, room_height):
 
 
@@ -717,53 +717,53 @@ def draw_tiles(platforms, static, room_width, room_height):
             pygame.draw.rect(static, shadow_color,
                     (tile.rect.x+ shadow_offset, tile.rect.y+ shadow_offset, tile_size, tile_size))
     for tile in platforms: #actual tile
-        if tile.type != "cracked": 
+        if tile.type != "cracked":
             image = tile_images.get(tile.type, tile_images["normal"])
             static.blit(image, (tile.rect.x, tile.rect.y))
     return static
 
-def spawn_particles(quantity, room_width, room_height, colour):   
+def spawn_particles(quantity, room_width, room_height, colour):
     global particles
     particles = []
     for _ in range(quantity):
-        particle = Particle(colour) 
+        particle = Particle(colour)
         particles.append(particle)
-        
-    
+
+
 def load_level(current_level, tile_size, player, bg):
     global platforms, room_item, room_item_pos, room_width, room_height, cracked_tiles
     global psycho_logged, bg_imgs, particles, lasers
     particles = []
     zone = get_zone(current_level)
-    if "csv" in levels[current_level]: 
+    if "csv" in levels[current_level]:
         platforms,room_item, room_item_pos, cracked_tiles, lasers = build_platforms_from_csv(current_level, tile_size)
         room_width, room_height = room_vars_from_csv(current_level, tile_size)
         static = pygame.Surface((room_width, room_height), pygame.SRCALPHA)
         static.fill((0,0,0,0))
         static = draw_tiles(platforms, static, room_width, room_height)
         bg = draw_bg(room_width, room_height, current_level)
-        
+
         if zone in PARTICLE_COLORS:
             spawn_particles(30, room_width, room_height, PARTICLE_COLORS[zone])
-        
 
-        
+
+
     else:
         platforms, room_item, room_item_pos = build_platforms(current_level, tile_size)
         room_width, room_height = room_vars(current_level, tile_size)
         static = pygame.Surface((room_width, room_height))
         static = draw_tiles(platforms, static, room_width, room_height)
-    if current_level in psycho_log and current_level not in psycho_logged: 
+    if current_level in psycho_log and current_level not in psycho_logged:
         for log in psycho_log[current_level]:
             add_log(log)
             psycho_logged.add(current_level)
     player.pr_dashes = player.dashes_left
-    
-    
-        
-        
+
+
+
+
     return static, bg
-    
+
 def draw_bg(room_width, room_height, current_level):
     zone = get_zone(current_level)
     top_image = bg_imgs[zone]["top"]
@@ -781,7 +781,7 @@ def draw_bg(room_width, room_height, current_level):
         #bottom
         w = bottom_image.get_width()
         h = bottom_image.get_height()
-        for x in range(0, room_width + w - 1, w): 
+        for x in range(0, room_width + w - 1, w):
                 bg.blit(bottom_image, (x, room_height - h))
     return bg
 
@@ -818,12 +818,12 @@ title_timer = pygame.time.get_ticks()
 title_alpha = 255
 
 
-###### MAIN LOOP 
+###### MAIN LOOP
 ########################
 #######################3
 ########################
 ############################################3
-#################### 
+####################
 ######################3
 
 running = True
@@ -837,11 +837,11 @@ while running:
 
     camera.update(player.rect, room_width, room_height, WIDTH, HEIGHT)
     shake_x, shake_y = camera.get_offset()
-    
+
     bg_x = int(-camera.x +shake_x) * 0.4
-    
+
     bg_y = int(-camera.y + shake_y)
-   
+
     screen.blit(bg, (bg_x, bg_y))
 
     if particles:
@@ -851,7 +851,7 @@ while running:
 
 
 
-    if cracked_tiles: 
+    if cracked_tiles:
         for tile in cracked_tiles[:]:
             if tile not in dead_cracked:
                 shadow_x = tile.rect.x - camera.x + shake_x + shadow_offset
@@ -872,7 +872,7 @@ while running:
 
                     screen.blit(flash_surface, (flash_x, flash_y))
 
-                
+
                 tile.timer -= 1
                 tile.flash -= 1   # keep decreasing even after timer hits zero so it fades nicely
 
@@ -882,7 +882,7 @@ while running:
     screen.blit(static, (-camera.x + shake_x, -camera.y + shake_y))
 
 
-        
+
 
     # events
     for event in pygame.event.get():
@@ -891,7 +891,7 @@ while running:
             sys.exit()
     if player.bounce_lock > 0: player.bounce_lock -= 1
     keys = pygame.key.get_pressed()
-    w_just_pressed = keys[pygame.K_w] and not w_pressed_previous_frame  
+    w_just_pressed = keys[pygame.K_w] and not w_pressed_previous_frame
     up_just_pressed = keys[pygame.K_UP] and not up_pressed_previous_frame
     jump_triggered= w_just_pressed or up_just_pressed
     player.apply_gravity(platforms)
@@ -901,16 +901,16 @@ while running:
     player.move_x(platforms)
 
 
-        
 
-                
+
+
     if player.grounded and player.coyote_timer > 0 and player.current_tile != "autobounce":
         player.jump(keys)
     w_pressed_previous_frame = keys[pygame.K_w]
     up_pressed_previous_frame = keys[pygame.K_UP]
 
 
-    player.fade_color()        
+    player.fade_color()
 
     if "title" in levels[current_level]:
         elapsed = pygame.time.get_ticks() - title_timer
@@ -927,7 +927,7 @@ while running:
 
     #down
     if player.rect.y > room_height:
-            
+
             #down
         if "down" in levels[current_level]["exits"]:
             last_level = current_level
@@ -942,18 +942,18 @@ while running:
             player.rect.x, player.rect.y = get_spawn(current_level, spawn_point, tile_size)
             title_timer = pygame.time.get_ticks()
             title_alpha = 255
-            
+
         else: #die
             player.rect.x, player.rect.y = get_spawn(current_level, spawn_point, tile_size)
             player.dashes_left = player.pr_dashes
             deaths +=1
             #cracked tiles
-            dead_cracked.clear()  
+            dead_cracked.clear()
             if cracked_tiles:
                 for tile in cracked_tiles:
                     tile.triggered = False
                     tile.timer = 10
-                    if tile not in platforms:  
+                    if tile not in platforms:
                         platforms.append(tile)
 
 
@@ -962,27 +962,27 @@ while running:
         player.vel_x = 0
     #right
     if player.rect.x > room_width and "right" in levels[current_level]["exits"]:
-        
+
         last_level = current_level
         current_level = levels[current_level]["exits"]["right"]
         zone = get_zone(current_level)
         if zone != get_zone(last_level) and "title" not in levels[current_level] and zone != "room":
             add_log(f"Returned to {pretty_zones.get(zone, zone)}")
         room_item = None
-        spawn_point = "spawn_left" # so player cant just fall and respawn where they want to 
+        spawn_point = "spawn_left" # so player cant just fall and respawn where they want to
         static,bg = load_level(current_level, tile_size, player, bg)
 
         player.rect.x, player.rect.y = get_spawn(current_level, spawn_point, tile_size)
         player.vel_x, player.vel_y = 0,0
         title_timer = pygame.time.get_ticks()
-        title_alpha = 255     
+        title_alpha = 255
     #left
     elif player.rect.x < -20 and "left"in levels[current_level]["exits"]:
         last_level = current_level
         current_level = levels[current_level]["exits"]["left"]
         zone = get_zone(current_level)
         if zone != get_zone(last_level) and "title" not in levels[current_level] and zone != "room":
-            add_log(f"Returned to {pretty_zones.get(zone, zone)}")        
+            add_log(f"Returned to {pretty_zones.get(zone, zone)}")
         room_item = None
         spawn_point = "spawn_right"
         static, bg = load_level(current_level, tile_size, player,bg)
@@ -1014,44 +1014,44 @@ while running:
                     deaths +=1
                     player.rect.x, player.rect.y = get_spawn(current_level, spawn_point, tile_size)
                     player.vel_x = player.vel_y = 0
-                    dead_cracked.clear()  
+                    dead_cracked.clear()
                     if cracked_tiles:
                         for tile in cracked_tiles:
                             tile.triggered = False
                             tile.timer = 10
-                            if tile not in platforms:  
+                            if tile not in platforms:
                                 platforms.append(tile)
-        
+
 
     if lasers:
         for laser in lasers:
             if (abs(player.rect.bottom - laser.rect.top) <= 2 and #little 2px grace
                 player.rect.right > laser.rect.left and
-                player.rect.left < laser.rect.right) or (abs(player.rect.top - laser.rect.bottom) <= 2 and 
+                player.rect.left < laser.rect.right) or (abs(player.rect.top - laser.rect.bottom) <= 2 and
                 player.rect.right > laser.rect.left and
                 player.rect.left < laser.rect.right):
-                                        
+
                     player.rect.x, player.rect.y = get_spawn(current_level, spawn_point, tile_size)
                     player.vel_x = player.vel_y = 0
-                    dead_cracked.clear()  
+                    dead_cracked.clear()
                     if cracked_tiles:
                         for tile in cracked_tiles:
                             tile.triggered = False
                             tile.timer = 10
-                            if tile not in platforms:  
+                            if tile not in platforms:
                                 platforms.append(tile)
                     deaths += 1
 
-            
+
 
     draw_items()
     draw_log()
 
     player.draw(screen, camera.x + shake_x, camera.y + shake_y)
-        
+
     if flash_active:
         flash_timer += 1
-        
+
         if flash_timer <= 8:  #instant white blast
             alpha = 255
         elif flash_timer <= 28: #hold
@@ -1060,13 +1060,13 @@ while running:
             alpha = int(255 * (1 - (flash_timer - 28) / 52))
         else:
             flash_active = False  # done
-        
+
         flash_surf = pygame.Surface((WIDTH, HEIGHT))
         flash_surf.fill(flash_color if flash_timer > 8 else (255,255,255))
         flash_surf.set_alpha(alpha)
         screen.blit(flash_surf, (0, 0))
-        
-    
+
+
 
 
     fps = int(clock.get_fps())
@@ -1076,5 +1076,5 @@ while running:
     screen.blit(fps_count, (30,30))
     screen.blit(death_count, (WIDTH-150,30))
 
-    
+
     pygame.display.flip()
